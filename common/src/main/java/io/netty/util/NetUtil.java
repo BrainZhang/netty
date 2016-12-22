@@ -25,6 +25,7 @@ import java.io.FileReader;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
@@ -931,6 +932,25 @@ public final class NetUtil {
         } catch (UnknownHostException e) {
             throw new RuntimeException(e); // Should never happen
         }
+    }
+
+    /**
+     * Returns the {@link String} representation of an {@link InetSocketAddress}.
+     * <p>
+     * The output does not include Scope ID.
+     * @param addr {@link InetSocketAddress} to be converted to an address string
+     * @return {@code String} containing the text-formatted IP address
+     */
+    public static String toSocketAddressString(InetSocketAddress addr) {
+        final String rhost;
+        if (addr.isUnresolved()) {
+            String hostString = PlatformDependent.javaVersion() >= 7 ? addr.getHostString() : addr.getHostName();
+            rhost = isValidIpV6Address(hostString) ? '[' + hostString + ']' : hostString;
+        } else {
+            InetAddress address = addr.getAddress();
+            rhost = address instanceof Inet4Address ? toAddressString(address) : '[' + toAddressString(address) + ']';
+        }
+        return rhost + ':' + addr.getPort();
     }
 
     /**
