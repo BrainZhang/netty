@@ -1054,7 +1054,11 @@ public class ReferenceCountedOpenSslEngine extends SSLEngine implements Referenc
 
         isInboundDone = true;
 
-        shutdown();
+        if (isOutboundDone()) {
+            // Only call shutdown if there is no outbound data pending.
+            // See https://github.com/netty/netty/issues/6167
+            shutdown();
+        }
 
         if (handshakeState != HandshakeState.NOT_STARTED && !receivedShutdown) {
             throw new SSLException(
