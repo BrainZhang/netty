@@ -154,6 +154,7 @@ public final class ReferenceCountedOpenSslServerContext extends ReferenceCounted
                     SSLContext.setCertVerifyCallback(ctx, new TrustManagerVerifyCallback(engineMap, manager));
                 }
 
+                /* Disable to test if test timeouts are gone.
                 X509Certificate[] issuers = manager.getAcceptedIssuers();
                 if (issuers != null && issuers.length > 0) {
                     long bio = 0;
@@ -166,6 +167,7 @@ public final class ReferenceCountedOpenSslServerContext extends ReferenceCounted
                         freeBio(bio);
                     }
                 }
+                */
             } catch (SSLException e) {
                 throw e;
             } catch (Exception e) {
